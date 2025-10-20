@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-
+from pydantic import BaseModel 
+# fastapi dev app main.py --reload
 app = FastAPI()
 
 product = [
@@ -62,3 +63,29 @@ async def delete_data(id:int):
         if i["id"] == id:
             product.remove(i)
             return{"message":"one data deleted successfully"} 
+
+
+class Product(BaseModel):
+    id:int
+    name:str
+    city:str
+    age:int
+    stock : int | None = None 
+
+@app.post("/create_item") # creating new data 
+async def create_item(new_item:Product):
+    return new_item  
+
+
+
+
+class BaseUser(BaseModel):
+    username: str
+    full_name: str | None = None 
+
+class UserIn(BaseUser):
+    password: str
+ 
+@app.post("/create_registration") 
+async def create_user(user:UserIn) ->BaseUser:
+    return user 
